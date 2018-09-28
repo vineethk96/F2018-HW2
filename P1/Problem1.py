@@ -1,58 +1,25 @@
 #Problem 1 ECE 4984
 #!/usr/bin/python3
 
-edges = []
-neighbors = []
-routeTaken = []
-
-totalWeight = 0
-end = 0
-neighborExistsBool = False
-
-def minimum(neighbors, edges):
-#search for the appropriate dictionary entry
-	#print("inside the minimum funciton")
-
-	neighborExistsBool = False
-
-	for currVertex in neighbors:
-
-		if currVertex == 110:
-			return neighbors
-
-		#search through the "database" for possible neighbors
-		for dictionary in edges:
-
-			if int(currVertex) == int(dictionary["i"]):		#found the currVertex
-				
-				#check to see if the neighbor exists already
-				for existNeighbor in neighbors:
-					if int(dictionary["j"]) == int(existNeighbor):
-						neighborExistsBool = True
-
-				#add neighbor to the list
-				if neighborExistsBool == False:
-					neighbors.append(dictionary["j"])
-					#print(int(dictionary["j"]))
-				else:
-					neighborExistsBool = False
-
-	minimum(neighbors, edges)
-
-
-
 if __name__ == '__main__':
 
-	# 1) read from the input.txt file
+	counter_i = 0
+	counter_k = 0
+	repeatedVal = False
+	edges = []
+	neighbors = []
+	edgeCost = []
 
-	with open('input2.txt') as fin:
+# 1) read from the input.txt file
+
+	with open('input1.txt') as fin:
 		
 		n = fin.readline()
 		print("total number of vertices: " + n)
-		start = fin.readline()
-		print("starting index: " + start)
-		end = fin.readline()
-		print("goal vertex: " + end)
+		start = int(fin.readline())
+		print("starting index: " + str(start))
+		end = int(fin.readline())
+		print("goal vertex: " + str(end))
 
 		for line in fin:
 			lineArray = line.split()
@@ -60,42 +27,73 @@ if __name__ == '__main__':
 			edges.append(newDict)
 			del newDict
 
-	# data has been succesfully imported from the text file
+# 2) setup the 2D array
 
-	# Implement recursive algorithm to find the shortest distance between the
-	# start to the end
+	board = []    
+	for i in range(end): # create a list with nested lists
+	    board.append([])
+	    for n in range(end):
+	    	board[i].append("inf") # fills nested lists with data
+	board[0][start-1] = 0
 
-	#print("currVertex has been set")
+# 3) iterate through each column & row
+	while counter_k < end:			#k: (0 -> 109)
+		while counter_i < end:		#i: (0 -> 109)
 
-	# repeat till we reach the end of the maze
+			if board[counter_k][counter_i] != "inf":
 
-	neighbors.append(start)
-	
-	for dictionary in edges:
+# 3a) find the neighbors of the vertex at counter_i
+				for dictionary in edges:
 
-		if int(start) == int(dictionary["i"]):		#found the currVertex
-			neighbors.append(dictionary["j"])		#append the correlated neighbors
+					if int(dictionary["i"]) == (int(counter_i) + 1):
+						#check for repeated neighbor values
+						for vertex in neighbors:
+							if dictionary == vertex:
+								repeatedVal = True
 
-	neighbors = minimum(neighbors, edges)
+						if not repeatedVal:
+							neighbors.append(dictionary)
+						else:
+							repeatedVal = False
 
-	backtrace = end
-	#print("backtrace: " + backtrace)
-	#print("start: " + start)
+# 4) compute the cost per neighbor & pick the best
+				for vertex in neighbors:
 
-	
-	#time to backtrace the optimal route
-	while int(backtrace) != int(start):
-		for index in neighbors:							#search through all the neighbors
-			for dict1 in edges:							#find the corresponding edges to the current neighbor
-				if int(index) == int(dict1["i"]):					#if the current neighbor is found within the edges
-					#print(str(index))
-					if int(backtrace) == int(dict1["j"]):			#the final value is the neighbor
-						routeTaken.append(int(backtrace))
-						backtrace = index
-				if int(backtrace) == int(index):
-					break
-			if int(backtrace) == int(index):
-				break
+					if int(counter_k) == 0:
+						edgeCostVal = int(vertex["wij"])
+					else:
+						edgeCostVal = int(vertex["wij"]) + int(board[counter_k][counter_i])
 
-routeTaken.reverse()
-print(routeTaken)
+					edgeCost.append(edgeCostVal)
+
+					if int(counter_k) + 1 < end:
+						board[counter_k + 1][int(vertex["j"]) - 1] = edgeCostVal
+
+						#for x in range(end - counter_k):
+							#print(x)
+							#board[counter_k + x + 1][int(vertex["j"]) - 1] = edgeCostVal
+
+				del neighbors[:]
+				del edgeCost[:]
+
+			counter_i = counter_i + 1
+		counter_i = 1
+		counter_k = counter_k + 1
+
+
+	currVertex = start
+	counter_k = 0
+
+	while currVertex != end:
+
+		lowest = board[counter_k][0]
+
+		for vertex in board[counter_k]:
+
+			if vertex < lowest:
+				lowest = vertex
+
+		currVertex = lowest
+		print(currVertex)
+
+	#print(board)
