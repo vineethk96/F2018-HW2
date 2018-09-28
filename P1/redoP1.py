@@ -1,10 +1,11 @@
 #Problem 1 ECE 4984
 #!/usr/bin/python3
+import argparse
 
 edges = []
 neighbors = []
 routeTaken = []
-
+costRoute = []
 totalWeight = 0
 end = 0
 neighborExistsBool = False
@@ -42,8 +43,11 @@ def minimum(neighbors, edges):
 if __name__ == '__main__':
 
 	# 1) read from the input.txt file
+	parser = argparse.ArgumentParser()
+	parser.add_argument("a")
+	args = parser.parse_args()
 
-	with open('input1.txt') as fin:
+	with open(args.a) as fin:
 		
 		n = fin.readline()
 		print("total number of vertices: " + n)
@@ -93,5 +97,7 @@ if __name__ == '__main__':
 			if int(backtrace) == int(index):
 				break
 
-routeTaken.reverse()
-print(routeTaken)
+	routeTaken.reverse()
+	routeTaken.insert(0, start)
+	
+	print(routeTaken, file=open("output.txt", "a"))

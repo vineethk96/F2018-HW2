@@ -1,7 +1,13 @@
 #Problem 1 ECE 4984
 #!/usr/bin/python3
 
+import argparse
+
 if __name__ == '__main__':
+
+	parser = argparse.ArgumentParser()
+	parser.add_argument("a")
+	args = parser.parse_args()
 
 	counter_i = 0
 	counter_k = 0
@@ -12,7 +18,7 @@ if __name__ == '__main__':
 
 # 1) read from the input.txt file
 
-	with open('input1.txt') as fin:
+	with open(args.a) as fin:
 		
 		n = fin.readline()
 		print("total number of vertices: " + n)

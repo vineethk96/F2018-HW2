@@ -1,8 +1,7 @@
 #Problem 2 ECE 4984
 #!/usr/bin/python3
 
-from collections import defaultdict
-from heapq import *
+import argparse
 
 def minimum(edges, neighbors, i):
 
@@ -82,10 +81,7 @@ def dijkstra(edges, start, end, n):
 				minimum = possRoutes["wij"]
 				quickestRoute = possRoutes
 				# run one more time
-		'''
-		print("route:")
-		print(quickestRoute)
-		'''
+
 
 		totalWeight = quickestRoute["wij"] + costToCome[quickestRoute["i"]-1]
 
@@ -93,24 +89,12 @@ def dijkstra(edges, start, end, n):
 			#print("totalWeight is less")
 			costToCome[quickestRoute["j"]-1] = totalWeight
 
-		'''
-		print("openList: ")
-		print(openList)
-		print("visitedList: ")
-		print(visitedList)
-		print("costToCome: ")
-		print(costToCome)
-		'''
-
 		possDirections.remove(quickestRoute)
 		openList.remove(quickestRoute["j"])
 		visitedList.append(quickestRoute["j"])
 
 
 	backtrace = end
-	#print("backtrace: " + backtrace)
-	#print("start: " + start)
-
 	
 	#time to backtrace the optimal route
 	while int(backtrace) != int(start):
@@ -129,20 +113,22 @@ def dijkstra(edges, start, end, n):
 	routeTaken.reverse()
 	routeTaken.insert(0, start)
 	for step in routeTaken:
-		costRoute.append(costToCome[step - 1])
-	print()
-	print()
-	print(routeTaken)
-	print(costRoute)
+		costRoute.append(costToCome[step - 1])	
 
+	print(costRoute[len(costRoute) - 1], file=open("output_cost.txt", "a"))
+	print(len(visitedList), file=open("output_numiters.txt", "a"))
 
 if __name__ == '__main__':
+
+	parser = argparse.ArgumentParser()
+	parser.add_argument("a")
+	args = parser.parse_args()
 
 	edges = []
 
 # 1) read from the input.txt file
 
-	with open('input_1.txt') as fin:
+	with open(args.a) as fin:
 		
 		n = fin.readline()
 		print("total number of vertices: " + n)

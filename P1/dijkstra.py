@@ -1,8 +1,7 @@
 #Problem 2 ECE 4984
 #!/usr/bin/python3
 
-from collections import defaultdict
-from heapq import *
+import argparse
 
 def minimum(edges, neighbors, i):
 
@@ -126,17 +125,21 @@ def dijkstra(edges, start, end, n):
 		costRoute.append(costToCome[step - 1])
 	print()
 	print()
-	print(routeTaken)
-	print(costRoute)
+		print(routeTaken, file=open("output.txt", "a"))
+	print(costRoute, file=open("output.txt", "a"))
 
 
 if __name__ == '__main__':
+
+	parser = argparse.ArgumentParser()
+	parser.add_argument("a")
+	args = parser.parse_args()
 
 	edges = []
 
 # 1) read from the input.txt file
 
-	with open('input2.txt') as fin:
+	with open(args.a) as fin:
 		
 		n = fin.readline()
 		print("total number of vertices: " + n)
